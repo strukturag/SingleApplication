@@ -5,14 +5,15 @@ project(SingleApplication)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 
+# SingleApplication base class
+set(QAPPLICATION_CLASS QCoreApplication CACHE STRING "Inheritance class for SingleApplication")
+set_property(CACHE QAPPLICATION_CLASS PROPERTY STRINGS QApplication QGuiApplication QCoreApplication)
+
 # Libary target
 add_library(${PROJECT_NAME} STATIC
     singleapplication.cpp
     singleapplication_p.cpp
     )
-
-# SingleApplication base class
-target_compile_definitions(${PROJECT_NAME} PUBLIC QAPPLICATION_CLASS=${QAPPLICATION_CLASS})
 
 # Find dependencies
 find_package(Qt5Network)
@@ -23,6 +24,8 @@ elseif(QAPPLICATION_CLASS STREQUAL QGuiApplication)
 else()
     find_package(Qt5 COMPONENTS Core REQUIRED)
 endif()
+target_compile_definitions(${PROJECT_NAME} PRIVATE QAPPLICATION_CLASS=${QAPPLICATION_CLASS})
+
 
 # Link dependencies
 target_link_libraries(${PROJECT_NAME} PRIVATE Qt5::Network)
